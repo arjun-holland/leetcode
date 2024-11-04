@@ -5,7 +5,7 @@ public:
         string re = "";
         int i=0;
         
-        while(i<s){
+        while(i<s){    // total time complexity is O(n) as we run on every char at once
             int c = 0;
             char ch = word[i];
             while(i<s && c<9 && word[i]==ch){
