@@ -5,7 +5,7 @@ public:
 
         // Step 1: Iterate n-1 times (since we already initialized result with
         // x)
-        while (--n) {
+        for(int i=1; i<n; i++) {
             // Step 2: Increment result and perform bitwise OR with x
             result = (result + 1) | x;
         }
