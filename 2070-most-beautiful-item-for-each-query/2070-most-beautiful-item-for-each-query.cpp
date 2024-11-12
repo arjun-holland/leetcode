@@ -8,7 +8,7 @@ public:
         int maxBeauty = 0;
 
         while(l <= r) {
-            mid = l + (r-l)/2;
+            mid = (l + r)/2;
 
             if(items[mid][0] > queryPrice) {
                 r = mid-1; //ignore current and right side items. Move to left now.
