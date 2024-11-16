@@ -8,11 +8,7 @@ public:
     }
     vector<int> resultsArray(vector<int>& nums, int k) {
         int n = nums.size();
-        if(n<k){
-            int s = n-k+1;
-            vector<int> res(s,-1);
-            return res;
-        }
+        
         vector<int> ans;
         for(int i=0; i<=n-k; i++){
             vector<int> a;
