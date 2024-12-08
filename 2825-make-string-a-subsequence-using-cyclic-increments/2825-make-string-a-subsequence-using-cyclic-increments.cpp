@@ -4,7 +4,7 @@ public:
         int j = 0; 
         int i = 0;
         
-        while(i<s1.size() && j<s2.size()){
+        while(i<s1.size() && j<s2.size()){//O(n+m)
             if((s1[i] == s2[j])||
                (s1[i]+1 == s2[j])||
                (s1[i]-25 == s2[j])){   //z=>25 : a=>0
