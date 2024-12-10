@@ -1,34 +1,37 @@
 class Solution {
 public:
-    int dp[1001][1001];
-    bool isPalindrome(string& s,int l,int r){ //dp
-        if(l>=r)return true;
+    
+    string isPalindrome(string& s,int l,int r){ //Expand-Around-Center Method
         
-        if(dp[l][r] != -1)return dp[l][r];
+        while(l>=0 && r<= s.length() && s[l] == s[r]){
+            l--;
+            r++;
+        }
         
-        if(s[l] == s[r])
-             return dp[l][r] = isPalindrome(s , l+1 , r-1);
-                    
-        return dp[l][r] = false;
+        return s.substr(l+1,r-l-1);
+        
     }
     string longestPalindrome(string s) { //O(n^2)
         if(s.length()<=1)return s;
         
         int max_ans = 1;
-        int st_Ind = 0;
-        
-        memset(dp,-1,sizeof(dp));
+        string ans = s.substr(0,1);
         
         for(int i=0; i < s.length(); i++){
-            for(int j=i; j < s.length(); j++){
-                if(isPalindrome(s,i,j)){
-                    if(max_ans < (j-i+1)){
-                        max_ans = j-i+1;
-                        st_Ind = i;
-                    }
-                }
+            
+            string oddSub = isPalindrome(s, i, i);
+            string evenSub = isPalindrome(s, i, i+1);
+            
+            if(max_ans < oddSub.length()){
+                ans = oddSub;
+                max_ans = oddSub.length();
             }
+            if(max_ans < evenSub.length()){
+                ans = evenSub;
+                max_ans = evenSub.length();
+            }
+            
         }
-        return s.substr(st_Ind, max_ans);
+        return ans;
     }
 };
