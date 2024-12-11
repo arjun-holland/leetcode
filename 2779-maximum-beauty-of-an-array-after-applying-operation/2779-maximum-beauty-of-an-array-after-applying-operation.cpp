@@ -1,20 +1,28 @@
 class Solution {
 public:
     int maximumBeauty(vector<int>& nums, int k) {
-        vector<pair<int,int>> in; //for intervals
-        for(int e : nums){
-            in.push_back({e-k,e+k});
-        }
-        sort(in.begin(),in.end());
         int res = INT_MIN;
-        deque<pair<int,int>> dq;
-        for(auto p:in){
-            if(!dq.empty() && dq.front().second < p.first){
-                dq.pop_front();
-            }
-            dq.push_back(p);
-            res = max(res,(int)dq.size());
+        sort(nums.begin(),nums.end());
+        for(int i=0;i<nums.size();i++){
+            int x  = nums[i];
+            int y = x + 2*k;   // y <= x+2k
+            
+            int j = binarysearch(nums,0,nums.size()-1,y);
+            res = max(res,j-i+1); 
         }
         return res;
+    }
+    int binarysearch(vector<int>& nums,int s,int e,int t){
+        int re = s;
+        while(s<=e){
+          int m = s+(e-s)/2;
+          if(nums[m] <= t){
+              s = m+1;
+              re = max(re,m);
+          }else{
+              e = m-1;
+          }
+        }
+        return re;
     }
 };
