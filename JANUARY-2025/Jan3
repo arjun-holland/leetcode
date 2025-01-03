@@ -1,0 +1,33 @@
+//Number of Ways to Split Array
+/*You are given a 0-indexed integer array nums of length n.
+nums contains a valid split at index i if the following are true:
+The sum of the first i + 1 elements is greater than or equal to the sum of the last n - i - 1 elements.
+There is at least one element to the right of i. That is, 0 <= i < n - 1.
+Return the number of valid splits in nums.
+
+Constraints:
+2 <= nums.length <= 10^5 //O(n) is accepted
+-10^5 <= nums[i] <= 10^5
+*/
+
+class Solution {
+public:
+    int waysToSplitArray(vector<int>& nums) {
+        long ans = 0, ts = 0;
+        for(int e : nums){  //finding total sum of the array
+            ts += e;
+        }
+        long ie = 0;
+        for(int i=0;i<nums.size()-1;i++){
+            ie += nums[i];   //checking that initial sum is greater or equal or not 
+            if(ie >= (ts-ie))
+               ans++;
+        }
+        return ans;
+    }
+};
+//Time complexity : O(n)
+//Space complexity : O(1)
+
+
+
