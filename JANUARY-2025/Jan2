@@ -1,0 +1,74 @@
+//Count Vowel Strings in Ranges
+/* You are given a 0-indexed array of strings words and a 2D array of integers queries.
+Each query queries[i] = [li, ri] asks us to find the number of strings present in the range li to ri (both inclusive) of words that start and end with a vowel.
+Return an array ans of size queries.length, where ans[i] is the answer to the ith query.
+Note that the vowel letters are 'a', 'e', 'i', 'o', and 'u'.
+
+Constraints:
+1 <= words.length <= 105  // Time complexity : O(n+q)
+1 <= words[i].length <= 40
+words[i] consists only of lowercase English letters.
+sum(words[i].length) <= 3 * 105
+1 <= queries.length <= 105
+0 <= li <= ri < words.length
+*/
+
+//Brute Force Technique
+class Solution {
+public:
+    vector<int> vowelStrings(vector<string>& words, vector<vector<int>>& queries) {
+         vector<int> ans;
+         for(auto p : queries){
+             int s = p[0];
+             int e = p[1];
+             int r = 0;
+             for(int i=s;i<=e;i++){
+                 string s = words[i];
+                 int se = s.length()-1;
+                 if(s[0] == 'a' || s[0] == 'e' || s[0] == 'i' || s[0] == 'o' || s[0] == 'u'){
+                     if(s[se] == 'a' || s[se] == 'e' || s[se] == 'i' || s[se] == 'o' || s[se] == 'u'){
+                         r++;
+                     }
+                 }
+             }
+             ans.push_back(r); 
+         }
+         return ans;
+    }
+}
+//Time Complexity : O(q*n)
+//Space Complexity : O(1)
+
+
+
+//Better Solution By Prefix Array Technique
+class Solution {
+public:
+    vector<int> vowelStrings(vector<string>& words, vector<vector<int>>& queries) {
+        vector<int> ans;                                  // Result array
+        vector<int> prefixCount(words.size(), 0);         // Prefix sum array to store counts
+        unordered_set<char> vowels = {'a', 'e', 'i', 'o', 'u'}; // Set for quick vowel checks
+        int index = 0;            // Current index in words
+        for (string s : words) {
+            int lastIndex = s.length() - 1; // Index of the last character
+            // Check if the word starts and ends with a vowel
+            if (vowels.count(s[0]) && vowels.count(s[lastIndex])) {
+               prefixCount[index] = (index == 0) ? 1 : prefixCount[index - 1] + 1;
+            } else {
+               prefixCount[index] = (index == 0) ? 0 : prefixCount[index - 1];
+            }
+            index++;
+        }
+         // Process each query
+        for (auto query : queries) {
+           int start = query[0];
+           int end = query[1];
+           // Calculate the result for the query using the prefix sum
+           int result = prefixCount[end] - (start > 0 ? prefixCount[start - 1] : 0);
+           ans.push_back(result);
+        }
+        return ans;
+    }
+};
+//Time Complexity : O(q+n)
+//Space Complexity : O(n)
