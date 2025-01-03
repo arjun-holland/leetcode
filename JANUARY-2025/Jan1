@@ -1,0 +1,66 @@
+//Maximum Score After Splitting a String
+/*Given a string s of zeros and ones, return the maximum score after splitting the string into two non-empty substrings (i.e. left substring and right substring).
+
+The score after splitting a string is the number of zeros in the left substring plus the number of ones in the right substring.
+
+Constraints:
+2 <= s.length <= 500  //so O(n^3) Time complexity is also accepted
+The string s consists of characters '0' and '1' only.
+*/
+
+//Brute Force method
+class Solution {
+public:
+    int maxScore(string s) {
+        int r =0;
+        for(int i=0;i<s.length()-1;i++){
+            int cr = 0;
+            for(int j=0;j<=i;j++){
+                if(s[j] == '0')cr++;
+            }
+            for(int j=i+1;j<s.length();j++){
+                if(s[j] == '1')cr++;
+            }
+            r = max(r,cr);
+        }
+        return r;
+    }
+};
+// Input: "011101"
+// Splits and scores:
+// Left: "0", Right: "11101", Score = 1 (0s) + 4 (1s) = 5
+// Left: "01", Right: "1101", Score = 1 (0s) + 3 (1s) = 4
+// Left: "011", Right: "101", Score = 1 (0s) + 2 (1s) = 3
+// Left: "0111", Right: "01", Score = 1 (0s) + 1 (1s) = 2
+// Left: "01110", Right: "1", Score = 2 (0s) + 1 (1s) = 3
+// Maximum Score = 5
+
+//Tiume Complexity : O(n^2)
+//Space Complexity : O(1)
+
+
+//Better solution
+class Solution {
+public:
+    int maxScore(string s) {
+        int totalOnes = 0;                         // Count total number of 1's in the string
+        for (char c : s) {
+            if (c == '1') totalOnes++;
+        }
+
+        int result = 0;                             // Variable to store the maximum score
+        int zeroCount = 0, oneCount = 0;            // Counts for zeros and ones in the left partition
+        for (int i = 0; i < s.length() - 1; i++) {  // Iterate up to s.length()-1 to ensure non-empty right partition
+            if (s[i] == '0') {
+                zeroCount++;
+            } else {
+                oneCount++;
+            }
+  
+            result = max(result, zeroCount + (totalOnes - oneCount));   // Calculate score for the current partition and update result
+        }
+        return result;
+    }
+};
+//Time complexity  : O(n)
+//Space complexity : O(1)
