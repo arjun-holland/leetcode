@@ -1,0 +1,48 @@
+//Unique Length-3 Palindromic Subsequences
+
+/*Given a string s, return the number of unique palindromes of length three that are a subsequence of s.
+Note that even if there are multiple ways to obtain the same subsequence, it is still only counted once.
+A palindrome is a string that reads the same forwards and backwards.
+A subsequence of a string is a new string generated from the original string with some characters (can be none) deleted without changing the relative order of the remaining characters.
+For example, "ace" is a subsequence of "abcde".*/
+
+
+
+class Solution {
+public:
+    int countPalindromicSubsequence(string s) {
+        int res = 0;              // Initialize the result to store the count of palindromic subsequences
+        unordered_set<char> st;   // Set to store unique characters in the string
+      
+        for(char c : s) {       // Step 1: Populate the set with unique characters from the string
+            st.insert(c);
+        }
+        
+        for(char letter : st) {   // Step 2: Iterate through each unique character
+            int strtIn = -1;      // Variable to store the first occurrence of the character
+            int endIn = -1;        // Variable to store the last occurrence of the character
+            
+            // Find the first and last occurrences of the current character in the string
+            for(int i = 0; i < s.length(); i++) {
+                if(letter == s[i]) {
+                    if(strtIn == -1) strtIn = i;  // Store the first occurrence
+                    else endIn = i;      // Update the last occurrence
+                }
+            }
+            
+            // If the character occurs more than once, check the characters between its occurrences
+            unordered_set<char> h;      // Set to store unique characters between `strtIn` and `endIn`
+            for(int i = strtIn + 1; i < endIn; i++) {
+                h.insert(s[i]);         // Add each character between the indices to the set
+            }
+            
+            // The size of `h` gives the number of distinct palindromic subsequences for the current character
+            res += h.size();
+        }
+        
+        return res;  // Return the total count of palindromic subsequences
+    }
+};
+
+//Time Complexity : O(n) (assuming constant alphabet size).
+//Space Complexity :  O(n)
