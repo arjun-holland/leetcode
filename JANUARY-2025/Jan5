@@ -1,0 +1,45 @@
+//Shifting Letters II
+/*You are given a string s of lowercase English letters and a 2D integer array shifts where shifts[i] = [starti, endi, directioni]. For every i, shift the characters in s from the index starti to the index endi (inclusive) forward if directioni = 1, or shift the characters backward if directioni = 0.
+Shifting a character forward means replacing it with the next letter in the alphabet (wrapping around so that 'z' becomes 'a'). Similarly, shifting a character backward means replacing it with the previous letter in the alphabet (wrapping around so that 'a' becomes 'z').
+Return the final string after all such shifts to s are applied.*/
+
+//Approach : using Difference Array Technique or prefix array technique which exalently works for range problemns in array 
+class Solution {
+public:
+    string shiftingLetters(string s, vector<vector<int>>& shifts) {
+        int n = s.size();
+        vector<int> diff(n,0);
+
+        //Build the difference array
+        for(auto &shift : shifts){
+            int L = shift[0];//start index
+            int R = shift[1];//end index
+            int dir = shift[2];
+            int x;
+            if(dir == 1){
+                x = 1;
+            }else{
+                x = -1;
+            }
+            diff[L] += x;
+            if(R+1 < n)diff[R+1] -= x;
+        } 
+
+        //cummulative sum to find the resultant change in the index i
+        for(int i=1;i<n;i++){
+            diff[i] = diff[i]+diff[i-1];
+        }
+    
+        //apply the shift change
+        for(int i=0;i<n;i++){
+            int shift = diff[i] % 26;//wrap around positive
+            if(shift < 0)
+               shift += 26;//wrap around negatives
+            s[i] = ((s[i]-'a' + shift) % 26) + 'a';
+        }
+        return s;
+    }
+};
+
+//Time Complexity : O(n+m),n = length of queries , n = length or string
+//Space Complexity :O(n)
