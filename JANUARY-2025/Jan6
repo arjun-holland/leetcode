@@ -5,14 +5,15 @@ In one operation, you can move one ball from a box to an adjacent box. Box i is 
 
 Return an array answer of size n, where answer[i] is the minimum number of operations needed to move all the balls to the ith box.
 
-Each answer[i] is calculated considering the initial state of the boxes.*/
+Each answer[i] is calculated considering the initial state of the boxes.
 
 Constraints:
 n == boxes.length
 1 <= n <= 2000
 boxes[i] is either '0' or '1'.
-as the constraints are low O(n^2) solution is also accepted
+as the constraints are low O(n^2) solution is also accepted */
 
+//Brute Force Approach
 class Solution {
 public:
     vector<int> minOperations(string boxes) {
@@ -30,6 +31,48 @@ public:
         return ans;
     }
 };
-
 //Time Complexity : O(n^2)
 //Space Complexity :O(1)
+
+
+//optimal approach(using prefix sum technique)
+class Solution {
+public:
+    vector<int> minOperations(string boxes) {
+        int n = boxes.size();
+
+        // Prefix count of '1's
+        vector<int> pr(n, 0), sr(n, 0);
+        pr[0] = (boxes[0] == '1') ? 1 : 0;
+        for (int i = 1; i < n; i++) {
+            pr[i] = pr[i - 1] + (boxes[i] == '1' ? 1 : 0);
+        }
+
+        // Suffix count of '1's
+        sr[n - 1] = (boxes[n - 1] == '1') ? 1 : 0;
+        for (int i = n - 2; i >= 0; i--) {
+            sr[i] = sr[i + 1] + (boxes[i] == '1' ? 1 : 0);
+        }
+
+        // Prefix sum of distances
+        vector<int> prh(n, 0), srh(n, 0);
+        for (int i = 1; i < n; i++) {
+            prh[i] = prh[i - 1] + pr[i - 1];
+        }
+
+        // Suffix sum of distances
+        for (int i = n - 2; i >= 0; i--) {
+            srh[i] = srh[i + 1] + sr[i + 1];
+        }
+
+        // Compute the final answer
+        vector<int> ans(n, 0);
+        for (int i = 0; i < n; i++) {
+            ans[i] = prh[i] + srh[i];
+        }
+
+        return ans;
+    }
+};
+//Time Complexity: O(n)
+//Space Complexity: O(4*n)
