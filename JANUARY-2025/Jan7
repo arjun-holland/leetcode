@@ -1,0 +1,40 @@
+//String Matching in an Array
+/*Given an array of string words, return all strings in words that is a substring of another word. You can return the answer in any order.
+
+A substring is a contiguous sequence of characters within a string.
+
+Constraints:
+1 <= words.length <= 100
+1 <= words[i].length <= 30
+words[i] contains only lowercase English letters.
+All the strings of words are unique.*/
+
+class Solution {
+public:
+    vector<string> stringMatching(vector<string>& words) {
+        // Use an unordered_set to store the substrings (results) to avoid duplicates
+        unordered_set<string> ans;
+
+        // Sort the words in descending order based on their length
+        // This ensures we check larger strings first for substrings
+        sort(words.begin(), words.end(), [](const string& first, const string& second) {
+            return first.size() > second.size();
+        });
+
+        for (int i = 0; i < words.size(); i++) {       // Iterate through each word in the sorted list
+            string s1 = words[i];                       // Take the current word
+            for (int j = i + 1; j < words.size(); j++) {     // Compare it with all smaller words in the list
+                string s2 = words[j];                       // Take the smaller word
+                if (s1.find(s2) != string::npos) {          // Check if s2 is a substring of s1
+                    ans.insert(s2);                       // If found, add it to the set
+                }
+            }
+        }
+
+        vector<string> a(ans.begin(), ans.end());  // Convert the set to a vector for the final result
+        return a;
+    }
+};
+
+//Time Complexity : O(n^2)
+//Space Complexity : O(n)
