@@ -1,0 +1,100 @@
+// Word Subsets
+/*You are given two string arrays words1 and words2.
+A string b is a subset of string a if every letter in b occurs in a including multiplicity.
+For example, "wrr" is a subset of "warrior" but is not a subset of "world".
+A string a from words1 is universal if for every string b in words2, b is a subset of a.
+Return an array of all the universal strings in words1. You may return the answer in any order.
+
+Constraints:
+1 <= words1.length, words2.length <= 104
+1 <= words1[i].length, words2[i].length <= 10
+words1[i] and words2[i] consist only of lowercase English letters.
+All the strings of words1 are unique.*/
+
+//Brute force
+class Solution {
+public:
+    bool isSubset(string &a, string &b) {
+        vector<int> freqA(26, 0), freqB(26, 0);
+        // Count frequencies of characters in both strings
+        for (char c : a) freqA[c - 'a']++;
+        for (char c : b) freqB[c - 'a']++;
+
+        for (int i = 0; i < 26; i++) {// Check if b is a subset of a
+            if (freqB[i] > freqA[i]) return false; // b is not a subset of a
+        }
+        return true;
+    }
+    vector<string> wordSubsets(vector<string>& words1, vector<string>& words2) {
+        vector<string> result;
+        for (string &a : words1) {
+            bool isUniversal = true;
+            for (string &b : words2) {  // Check against all words in words2
+                if (!isSubset(a, b)) {
+                    isUniversal = false;
+                    break;
+                }
+            }
+            if (isUniversal) result.push_back(a); // Add universal word to result
+        }
+        return result;
+    }
+};
+
+Time complexity:
+O(A×B×(L1+L2))
+Where:
+A: Number of words in words1.
+B: Number of words in words2.
+𝐿1: Average length of words in words1.
+𝐿2: Average length of words in words2
+
+
+
+
+//Optimal approach
+class Solution {
+public:
+    vector<string> wordSubsets(vector<string>& words1, vector<string>& words2) {
+        vector<int> c1(26, 0);  // This array will store the maximum frequency of each character required by words2
+
+        // Step 1: Build the frequency requirements (`c1`) for words2
+        for (const string& s : words2) { // For each word in words2
+            vector<int> c2(26, 0);       // Temporary frequency array for the current word
+            for (char c : s) {
+                c2[c - 'a']++;          // Count the frequency of each character in the current word
+                c1[c - 'a'] = max(c1[c - 'a'], c2[c - 'a']); // Update `c1` with the max frequency of each character
+            }
+        }
+
+        vector<string> ans; // Result to store universal words from words1
+
+        // Step 2: Check each word in words1 to see if it's universal
+        for (const string& s : words1) {
+            vector<int> c2(26, 0); // Frequency array for the current word in words1
+            for (char c : s) {
+                c2[c - 'a']++; // Count the frequency of each character in the current word
+            }
+            // Check if the current word satisfies the conditions in `c1`
+            for (int i = 0; i <= 26; i++) { 
+                if (i == 26) { // If all characters satisfy the conditions, add the word to the result
+                    ans.push_back(s);
+                    break;
+                }
+                if (c1[i] > c2[i]) break; // If any character in `c1` has a higher frequency than `c2`, it's not universal
+            }
+        }
+
+        return ans; // Return the result
+    }
+};
+
+Time Complexity: 
+𝑂(𝐵×𝐿2+𝐴×𝐿1)
+where:
+B = number of words in words2.
+A = number of words in words1.
+𝐿1,𝐿2 = average lengths of words in words1 and words2.
+Space Complexity:
+Space Complexity: 
+O(A), for storing the result. Frequency arrays contribute O(1).
