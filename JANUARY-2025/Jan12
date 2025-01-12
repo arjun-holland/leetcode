@@ -1,0 +1,53 @@
+//Check if a Parentheses String Can Be Valid
+/*
+A parentheses string is a non-empty string consisting only of '(' and ')'. 
+It is valid if any of the following conditions is true:
+It is ().
+It can be written as AB (A concatenated with B), where A and B are valid parentheses strings.
+It can be written as (A), where A is a valid parentheses string.
+You are given a parentheses string s and a string locked, both of length n. locked is a binary string consisting only of '0's and '1's.
+For each index i of locked, If locked[i] is '1', you cannot change s[i].
+But if locked[i] is '0', you can change s[i] to either '(' or ')'.
+Return true if you can make s a valid parentheses string. Otherwise, return false.
+
+Constraints:
+n == s.length == locked.length
+1 <= n <= 105
+s[i] is either '(' or ')'.
+locked[i] is either '0' or '1'.*/
+
+class Solution {
+public:
+    bool canBeValid(string s, string locked) {
+        if (s.size() <= 1 || s.size() % 2 != 0) return false; // A string of size <= 1 or odd length can't be valid
+
+        stack<int> st1; // Indices of unlocked positions
+        stack<int> st2; // Indices of locked '(' positions
+
+        // Process each character
+        for (int i = 0; i < locked.size(); i++) {
+            if (locked[i] == '0') { 
+                st1.push(i); // Store unlocked index
+            } else {
+                if (s[i] == '(') { 
+                    st2.push(i); // Store locked '(' index
+                } else { 
+                    if (st2.empty() && st1.empty()) return false; // Match ')' with a '(' or unlocked position
+                    if (!st2.empty()) st2.pop();
+                    else st1.pop();
+                }
+            }
+        }
+        if (st2.size() > st1.size()) return false;// Ensure enough unlocked positions for unmatched '('
+
+        while (!st2.empty()) {        // Match locked '(' with unlocked positions
+            if (st2.top() > st1.top()) return false;
+            st2.pop();
+            st1.pop();
+        }
+        return true;
+    }
+};
+
+//Time Complexity: O(n) — Single traversal of the string and stack operations.
+//Space Complexity: O(n) — Space used by the two stacks.
