@@ -1,0 +1,91 @@
+//Minimum Length of String After Operations
+/*You are given a string s.
+You can perform the following process on s any number of times:
+Choose an index i in the string such that there is at least one character to the left of index i that is equal to s[i], and at least one character to the right that is also equal to s[i].
+Delete the closest character to the left of index i that is equal to s[i].
+Delete the closest character to the right of index i that is equal to s[i].
+Return the minimum length of the final string s that you can achieve.
+
+Constraints:
+1 <= s.length <= 2 * 105
+s consists only of lowercase English letters.*/
+
+//brute force approach
+class Solution {
+public:
+    int minimumLength(string s) {
+        int ans = 0;
+        int n = s.length();
+
+        for(int i=1;i<n-1;i++){
+            char e = s[i];
+            bool vl = false,vr = false;
+            int l,r;
+            for(int j=i-1;j>=0;j--){
+                if(e == s[j]){
+                    vl = true;
+                    l = j;
+                    break;
+                }
+            }
+            if(vl==false)continue;
+            for(int k=i+1;k<n;k++){
+                if(e == s[k]){
+                    vr = true;
+                    r = k;
+                    break;
+                }
+            }
+            if(vl==true && vr==true){
+               s[l] = '1';
+               s[r] = '1';
+            }
+        }
+        for(int i=0;i<n;i++){
+            if(s[i] != '1')ans++;
+        }
+        return ans;
+    }
+};
+//Time complexity : O(n^2) must be
+//Space Complexity : O(1)
+
+//better approach
+class Solution {
+public:
+    int minimumLength(string s) {
+        int n = s.length();
+        vector<bool> removed(n, false); // Track removed characters
+        int ans = n;
+
+        for (int i = 1; i < n - 1; ++i) {
+            if (removed[i]) continue;  //checking if s[i] is removed character or not
+
+            char e = s[i];
+            int left = -1, right = -1;
+
+            for (int j = i - 1; j >= 0; j--) {// Find the closest left occurrence of s[i]
+                if (!removed[j] && s[j] == e) {
+                    left = j;
+                    break;
+                }
+            }
+
+            for (int k = i + 1; k < n; k++) {// Find the closest right occurrence of s[i]
+                if (!removed[k] && s[k] == e) {
+                    right = k;
+                    break;
+                }
+            }
+
+            if (left != -1 && right != -1) {// If both closest left and right exist, remove them
+                removed[left] = true;
+                removed[right] = true;
+                ans -= 2; // Reduce the count of characters in the final string
+            }
+        }
+        return ans;
+    }
+};
+//Time Complexity : the total complexity is O(n)×O(n)=O(n^2). not always 
+//Space complexity : O(n)
