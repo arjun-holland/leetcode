@@ -1,0 +1,91 @@
+// Trapping Rain Water II
+/*Given an m x n integer matrix heightMap representing the height of each unit cell in a 2D elevation map,
+return the volume of water it can trap after raining.
+
+ Intuition : This approach simulates water flowing inwards from the boundaries,
+as boundary cells act as the "walls" preventing overflow.
+By processing cells in increasing height order (using a min-heap),
+we ensure that water can only fill up to the lowest boundary around it.
+The algorithm calculates trapped water at each unvisited cell based on , 
+the difference between the current boundary height and the cell's height.
+
+Constraints:
+m == heightMap.length
+n == heightMap[i].length
+1 <= m, n <= 200
+0 <= heightMap[i][j] <= 2 * 104 */
+
+
+//Approach (Using Heap) to get minimum height first
+class Solution {
+public:
+    // Define a pair to store height and cell indices (i, j)
+    typedef pair<int, pair<int, int>> PP;
+
+    // Directions to move in the 4 possible directions (right, down, left, up)
+    vector<vector<int>> directions = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+
+    int trapRainWater(vector<vector<int>>& heightMap) {
+        // Get the number of rows (m) and columns (n)
+        int m = heightMap.size(); // Number of rows
+        int n = heightMap[0].size(); // Number of columns
+
+        // Min-heap to store boundary cells in increasing order of their heights
+        priority_queue<PP, vector<PP>, greater<>> boundaryCells;
+
+        // Visited matrix to keep track of processed cells
+        vector<vector<bool>> visited(m, vector<bool>(n, false));
+
+        // Add all cells in the leftmost and rightmost columns to the heap
+        for (int r = 0; r < m; ++r) {
+            for (int c : {0, n - 1}) { // Boundary columns: 0 (leftmost) and n-1 (rightmost)
+                boundaryCells.push({heightMap[r][c], {r, c}});
+                visited[r][c] = true; // Mark these cells as visited
+            }
+        }
+
+        // Add all cells in the topmost and bottommost rows to the heap
+        for (int c = 0; c < n; ++c) {
+            for (int r : {0, m - 1}) { // Boundary rows: 0 (topmost) and m-1 (bottommost)
+                boundaryCells.push({heightMap[r][c], {r, c}});
+                visited[r][c] = true; // Mark these cells as visited
+            }
+        }
+
+        int trappedWater = 0; // Initialize trapped water to 0
+
+        // Process cells in the priority queue
+        while (!boundaryCells.empty()) {
+            auto [height, cell] = boundaryCells.top(); // Get the cell with the smallest height
+            boundaryCells.pop();
+
+            int i = cell.first;  // Row index of the current cell
+            int j = cell.second; // Column index of the current cell
+
+            // Check all 4 possible neighbors
+            for (vector<int>& dir : directions) {
+                int i_ = i + dir[0]; // Row index of the neighbor
+                int j_ = j + dir[1]; // Column index of the neighbor
+
+                // Check if the neighbor is within bounds and not visited
+                if (i_ >= 0 && i_ < m && j_ >= 0 && j_ < n && !visited[i_][j_]) {
+                    // Calculate trapped water, if any, for the neighbor
+                    trappedWater += max(0, height - heightMap[i_][j_]);
+
+                    // Push the neighbor into the heap with the updated height
+                    // The new height is the maximum of the current height and the neighbor's height
+                    boundaryCells.push({max(height, heightMap[i_][j_]), {i_, j_}});
+
+                    // Mark the neighbor as visited
+                    visited[i_][j_] = true;
+                }
+            }
+        }
+
+        return trappedWater; // Return the total trapped water
+    }
+};
+//T.C : O(m * n * log(m * n)) - Each cell is processed once, and heap operations take log(m * n) time.
+//S.C : O(m * n) - Space used by visited matrix and the priority queue.
+
+ 
