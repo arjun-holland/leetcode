@@ -1,13 +1,16 @@
-// Trapping Rain Water II
+// Trapping Rain Water II (HARD)
 /*Given an m x n integer matrix heightMap representing the height of each unit cell in a 2D elevation map,
 return the volume of water it can trap after raining.
 
- Intuition : This approach simulates water flowing inwards from the boundaries,
-as boundary cells act as the "walls" preventing overflow.
-By processing cells in increasing height order (using a min-heap),
-we ensure that water can only fill up to the lowest boundary around it.
-The algorithm calculates trapped water at each unvisited cell based on , 
-the difference between the current boundary height and the cell's height.
+ Intuition :
+* Water present inside the boundaries is depends on the min value of the boundary so we have to use the min heap 
+  to find the min value among boundaries.
+* This approach simulates water flowing inwards from the boundaries,
+  as boundary cells act as the "walls" preventing overflow.
+  By processing cells in increasing height order (using a min-heap),
+  we ensure that water can only fill up to the lowest boundary around it.
+  The algorithm calculates trapped water at each unvisited cell based on , 
+  the difference between the current boundary height and the cell's height.
 
 Constraints:
 m == heightMap.length
