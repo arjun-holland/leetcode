@@ -1,0 +1,76 @@
+//Bitwise XOR of All Pairings
+/*You are given two 0-indexed arrays, nums1 and nums2, consisting of non-negative integers. There exists another array, nums3, which contains the bitwise XOR of all pairings of integers between nums1 and nums2 (every integer in nums1 is paired with every integer in nums2 exactly once).
+
+Return the bitwise XOR of all integers in nums3.
+Constraints:
+1 <= nums1.length, nums2.length <= 105
+0 <= nums1[i], nums2[j] <= 109*/
+
+/* we can solve this in O(n^2) time complexity i.e two loops 
+   Approach:
+    - initialize the array A of size nums1 
+    - outer loop
+        inner loop
+          save the XOR result of every inner loop value for each outer loop value in the array A
+    - now perform the Xor Operation for all the elements in A array and return the result    
+  */
+
+//better approach
+class Solution {
+public:
+    int xorAllNums(vector<int>& nums1, vector<int>& nums2) {
+        int len1 = nums1.size();   // Get lengths of arrays
+        int len2 = nums2.size();
+        unordered_map<int, long> freq;  // Map to store frequency of each number
+
+        for (int num : nums1) { // Add frequencies for nums1 elements
+            freq[num] += len2;// Each element appears len2 times in final result
+        }
+
+        for (int num : nums2) { // Add frequencies for nums2 element
+            freq[num] += len1;  // Each element appears len1 times in final result
+        }
+        int ans = 0;  // XOR numbers that appear odd number of times
+        for (auto& [num, count] : freq) {
+            if (count % 2 == 1) {
+                ans ^= num;
+            }
+        }
+        return ans;
+    }
+}; 
+
+/*Key Observations:
+Effect of Array Length:
+
+If nums1 has an odd length, each element of nums2 will contribute to the final XOR result exactly once (since nums1 has an odd number of elements, multiplying with any count remains odd).
+Similarly, if nums2 has an odd length, each element of nums1 will contribute to the final XOR result exactly once.
+Effect of Array Parity:
+
+If nums1 or nums2 has an even length, all contributions from the other array will cancel out (even number of XORs result in 0).
+*/
+class Solution{
+public:
+    int xorAllNums(vector<int>& nums1, vector<int>& nums2) {
+        int m = nums1.size();
+        int n = nums2.size();
+
+        int XOR = 0;
+
+        if(m % 2 != 0) { //m is of odd length
+            for(int &num : nums2) {
+                XOR ^= num;
+            }
+        }
+
+        if(n % 2 != 0) { //n is of odd length
+            for(int &num : nums1) {
+                XOR ^= num;
+            }
+        }
+
+        return XOR;
+    }
+};
+//Time Complexity : O(n)
+//Space Complexity : O(1)
