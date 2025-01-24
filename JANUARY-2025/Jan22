@@ -1,0 +1,70 @@
+// Map of Highest Peak (Medium)
+/*
+You are given an integer matrix isWater of size m x n that represents a map of land and water cells.
+If isWater[i][j] == 0, cell (i, j) is a land cell.
+If isWater[i][j] == 1, cell (i, j) is a water cell.
+You must assign each cell a height in a way that follows these rules:
+The height of each cell must be non-negative.
+If the cell is a water cell, its height must be 0.
+Any two adjacent cells must have an absolute height difference of at most 1. 
+A cell is adjacent to another cell if the former is directly north, east, south, or west of the latter (i.e., their sides are touching).
+Find an assignment of heights such that the maximum height in the matrix is maximized.
+
+Return an integer matrix height of size m x n where height[i][j] is cell (i, j)'s height. If there are multiple solutions, return any of them.
+
+Constraints:
+m == isWater.length
+n == isWater[i].length
+1 <= m, n <= 1000
+isWater[i][j] is 0 or 1.
+There is at least one water cell.*/
+
+
+// Step 1: Get the number of rows (m) and columns (n) in the grid
+// Step 2: Create a height matrix initialized with -1 (indicating unprocessed cells)
+// Step 3: Create a queue to perform BFS (Breadth-First Search)
+// Step 4: Directions for moving up, right, down, and left
+// Step 5: Initialize the BFS with all water cells, setting their height to 0
+// Step 6: Perform BFS to fill in the height matrix
+            // Step 7: Explore all four possible directions (up, right, down, left)
+                // Step 8: Check if the new position (nr, nc) is within bounds and hasn't been processed yet
+// Step 9: Return the final height matrix
+
+class Solution {
+public:
+    vector<vector<int>> highestPeak(vector<vector<int>>& isWater) {
+        int m = isWater.size(), n = isWater[0].size();
+        vector<vector<int>> height(m, vector<int>(n, -1));
+        queue<pair<int, int>> q;
+        vector<vector<int>> directions = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+        
+        for (int r = 0; r < m; r++) {
+            for (int c = 0; c < n; c++) {
+                if (isWater[r][c] == 1) { // If the cell is water (isWater[r][c] == 1), set its height to 0 and add it to the queue
+                    height[r][c] = 0;    // Water cells have the minimum height (0)
+                    q.push({r, c});      // Push water cells' positions into the BFS queue
+                }
+            }
+        }
+        
+        while (!q.empty()) {
+            auto [r, c] = q.front(); // Get the front of the queue
+            q.pop();
+            
+            for (const auto& dir : directions) {
+                int nr = r + dir[0], nc = c + dir[1];
+                
+                if (nr >= 0 && nr < m && nc >= 0 && nc < n && height[nr][nc] == -1) { //Check if the new position (nr, nc) is within bounds and hasn't been processed yet
+                    height[nr][nc] = height[r][c] + 1;    // Set the height of the neighboring cell
+                    q.push({nr, nc});      // Add the neighboring cell to the queue for further exploration
+                }
+            }
+        }
+      
+        return height;
+    }
+};
+//T.C : O(m * n) //traverse graph
+//S.C : O(m * n) - using queue
+
+ 
