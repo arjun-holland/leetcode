@@ -1,0 +1,50 @@
+// Longest Strictly Increasing or Strictly Decreasing Subarray(Easy)
+/*
+You are given an array of integers nums. Return the length of the longest 
+subarray of nums which is either strictly increasing or strictly decreasing.
+
+Constraints:
+1 <= nums.length <= 50
+1 <= nums[i] <= 50
+*/
+
+class Solution {
+public:
+    int longestMonotonicSubarray(vector<int>& nums) {
+        // Initialize variables:
+        // si: length of the current increasing subarray
+        // sd: length of the current decreasing subarray
+        // ans: the maximum length of a monotonic subarray found so far
+        int si = 1, sd = 1, ans = 1;
+
+        // Get the size of the input array
+        int j = nums.size();
+        int i = 0; // Pointer to traverse the array
+
+        // Traverse the array
+        while (i < j) {
+            // Check if the next element is greater than the current element (increasing)
+            if (i + 1 < j && nums[i + 1] > nums[i]) {
+                si += 1; // Increment the length of the increasing subarray
+                i++; // Move to the next element
+                sd = 1; // Reset the decreasing subarray length
+                ans = max(si, ans); // Update the maximum length if necessary
+            }
+            // Check if the next element is less than the current element (decreasing)
+            else if (i + 1 < j && nums[i + 1] < nums[i]) {
+                si = 1; // Reset the increasing subarray length
+                sd += 1; // Increment the length of the decreasing subarray
+                i++; // Move to the next element
+                ans = max(ans, sd); // Update the maximum length if necessary
+            }
+            // If the next element is equal to the current element (no change)
+            else {
+                i++; // Move to the next element
+                sd = 1; // Reset the decreasing subarray length
+                si = 1; // Reset the increasing subarray length
+            }
+        }
+        // Return the length of the longest monotonic subarray found
+        return ans;
+    }
+};
