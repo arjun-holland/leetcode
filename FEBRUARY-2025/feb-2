@@ -1,0 +1,49 @@
+//Check if Array Is Sorted and Rotated(easy)
+/*
+Given an array nums, return true if the array was originally sorted in non-decreasing order, then rotated some number of positions (including zero). Otherwise, return false.
+
+There may be duplicates in the original array.
+
+Note: An array A rotated by x positions results in an array B of the same length such that A[i] == B[(i+x) % A.length], where % is the modulo operation.
+*/
+//brute force
+class Solution {
+public:
+    bool check(vector<int>& B) {
+
+        int n = B.size();
+        vector<int> A = B;
+        sort(A.begin(),A.end());
+
+        for(int r=0;r<n;r++){
+            bool v = true;
+            for(int i=0;i<n;i++){
+                if(A[i] != B[(i+r)%n]){
+                  v = false;
+                  break;
+                }
+            }
+            if(v)return true;
+        }
+        return false;
+    }
+};
+T.C : O(n^2)
+S.C : O(n)
+
+/* if the no.of peaks in the array is <= to the 1 the array is sorted and rotated
+class Solution {
+public:
+    bool check(vector<int>& nums) {
+
+        int n = nums.size();
+        int p = 0;//no.of peaks
+        for(int i=0;i<n;i++){
+            if(nums[i] > nums[(i+1)%n])
+                p++;
+        }
+        return p <= 1;        
+    }
+};
+T.C : O(n)
+S.C : O(1)
