@@ -1,0 +1,67 @@
+//Check if One String Swap Can Make Strings Equal(Easy)
+/*
+You are given two strings s1 and s2 of equal length. 
+A string swap is an operation where you choose two indices in a string (not necessarily different) 
+and swap the characters at these indices.
+Return true if it is possible to make both strings equal by performing at most one string swap on exactly one of the strings.
+Otherwise, return false.
+
+Constraints:
+1 <= s1.length, s2.length <= 100
+s1.length == s2.length
+s1 and s2 consist of only lowercase English letters.
+*/
+
+//T.C : O(n)
+//S.C : O(26) 
+class Solution {
+public:
+    bool areAlmostEqual(string s1, string s2) {
+        int n = s1.length();
+        if(s1 == s2) {
+            return true;
+        }
+        int diffs = 0;
+        int freq1[26] = {0};
+        int freq2[26] = {0};
+        for(int i = 0; i < n; i++) {
+            if(s1[i] != s2[i]) {
+                diffs++;
+            }
+            if(diffs > 2)
+                return false;
+
+            freq1[s1[i] - 'a']++;
+            freq2[s2[i] - 'a']++;
+        }
+        for(int i = 0; i < 26; i++) {
+            if(freq1[i] != freq2[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+};
+
+//better approach
+class Solution {
+public:
+    bool areAlmostEqual(string s1, string s2) {
+        if(s1 == s2)return true;
+
+        int fi = 0;//first index
+        int si = 0;//second index
+        int diff = 0;
+        for(int i=0;i<s1.size();i++){
+            if(s1[i] != s2[i]){
+                diff++;
+                if(diff>2)return false;
+                else if(fi == 0)fi = i;
+                else si = i;
+            }
+        }
+        return  s1[fi] == s2[si] && s1[si] == s2[fi];
+    }
+};
+//T.C : O(n)
+//S.C : O(1)
