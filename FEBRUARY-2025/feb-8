@@ -1,0 +1,71 @@
+//Find the Number of Distinct Colors Among the Balls(Medium)
+/*
+You are given an integer limit and a 2D array queries of size n x 2.
+There are limit + 1 balls with distinct labels in the range [0, limit]. Initially, all balls are uncolored.
+For every query in queries that is of the form [x, y], you mark ball x with the color y.
+After each query, you need to find the number of distinct colors among the balls.
+Return an array result of length n, where result[i] denotes the number of distinct colors after ith query.
+Note that when answering a query, lack of a color will not be considered as a color.
+
+Constraints:
+1 <= limit <= 109
+1 <= n == queries.length <= 105
+queries[i].length == 2
+0 <= queries[i][0] <= limit
+1 <= queries[i][1] <= 10^9
+*/
+
+//simulation sum 
+//gives the TLE as we are checking the ball again which we checked already by consuming the space 
+class Solution {
+public:
+    vector<int> queryResults(int limit, vector<vector<int>>& queries) {
+        vector<int> ansh(limit+1,-1); 
+        unordered_map<int,int> cc; //colour -> count 
+        vector<int> res(queries.size());
+
+        for(int i=0;i<queries.size();i++){
+            int b = queries[i][0]; //ball
+            int c = queries[i][1];  //color
+            
+            if(ansh[b] != -1){  //if ball has already colored then
+                int ct = ansh[b];  //take that ball color out
+                cc[ct]--;   //reduce that color frequency
+                if(cc[ct] == 0)cc.erase(ct); 
+            }
+
+            ansh[b] = c; //ball  has that specific color
+            cc[c]++;  //incremnt that color usage
+            res[i] = cc.size();
+        }
+        return res;
+    }
+};
+
+//s.c : o(n) we are not checking useg extra space for same balls
+//t.c : O(n)
+class Solution {
+public:
+    vector<int> queryResults(int limit, vector<vector<int>>& queries) {
+    
+        unordered_map<int,int> bc; //ball -> colour
+        unordered_map<int,int> cc; //colour -> count 
+        vector<int> res(queries.size());
+
+        for(int i=0;i<queries.size();i++){
+            int b = queries[i][0]; //ball
+            int c = queries[i][1];  //color
+            
+            if(bc.count(b)){  //if ball has already colored then
+                int ct = bc[b];  //take that ball color out
+                cc[ct]--;   //reduce that color frequency
+                if(cc[ct] == 0)cc.erase(ct); 
+            }
+
+            bc[b] = c; //ball  has that specific color
+            cc[c]++;  //incremnt that color usage
+            res[i] = cc.size();
+        }
+        return res;
+    }
+};
