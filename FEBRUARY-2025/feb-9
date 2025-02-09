@@ -1,0 +1,42 @@
+//2364. Count Number of Bad Pairs(Medium)
+/*
+You are given a 0-indexed integer array nums.
+A pair of indices (i, j) is a bad pair if i < j and j - i != nums[j] - nums[i].
+Return the total number of bad pairs in nums.
+
+Constraints:
+1 <= nums.length <= 105
+1 <= nums[i] <= 1^9
+*/
+
+
+//T.c : O(n)
+//S.C : O(n)
+class Solution {
+public:
+    long long countBadPairs(vector<int>& nums) {
+        unordered_map<int,int> mp;
+        long long res = 0;
+
+        for(int i=0;i<nums.size();i++){
+            int diff = nums[i]-i;
+            int totalPairs = i, goodPairs = 0;
+            if(mp.find(diff) != mp.end()){
+                goodPairs = mp[diff];
+            }
+            res += (totalPairs - goodPairs);
+            mp[diff]++;
+        } 
+        return res;
+    }
+};
+
+
+Why we are not allowed to use O(n^2) time complexity?
+we should not aim for an O(n^2) solution(Brute force) when the constraints are this large.
+by conostraints n can be up to 10^5, so an O(n^2) solution would require about O(10^10) operations in the worst case.
+A typical computer can handle around 10^8 operations per second, so 10^10 operations would be too slow.
+What should you aim for?
+You should try to solve the problem in:
+O(nlogn) (e.g., using sorting, binary search, or a priority queue)
+O(n) (e.g., using hash maps, two-pointer techniques, or prefix sums)
