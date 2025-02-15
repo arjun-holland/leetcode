@@ -1,0 +1,57 @@
+// Find the Punishment Number of an Integer (Medium)
+/*
+Given a positive integer n, return the punishment number of n.
+The punishment number of n is defined as the sum of the squares of all integers i such that:1 <= i <= n
+The decimal representation of i * i can be partitioned into contiguous substrings s
+uch that the sum of the integer values of these substrings equals i.
+Constraints:
+1 <= n <= 1000
+*/
+class Solution {
+public:
+    // Helper function to check if there's a way to partition the string s
+    // so that the sum of the partitions equals the target number n.
+    // Uses memoization to avoid recomputing overlapping subproblems.
+    bool check(string& s, int& n, int i, int cursum, vector<vector<int>>& t) {
+        // Base case: if we have reached the end of the string
+        if (i == s.length()) {
+            return cursum == n;  // Check if the current sum matches the target
+        }
+        // If the current sum exceeds n, no need to continue further
+        if (cursum > n) return false;
+
+        // If already computed, return the stored result from memo table
+        if (t[i][cursum] != -1) return t[i][cursum];
+
+        bool possible = false;
+        // Try all possible substrings starting from index i
+        for (int j = i; j < s.length(); j++) {
+            string st = s.substr(i, j - i + 1);    // Extract substring from index i to j
+            int ist = stoi(st);         // Convert substring to integer
+            possible = possible || check(s, n, j + 1, cursum + ist, t);  // Recur for the next part of the string with updated sum
+            if (possible == true) return true;  // If found, return immediately
+        }
+        return t[i][cursum] = possible;  // Store the result in memo table
+    }
+
+    // Function to calculate the punishment number for given n
+    int punishmentNumber(int n) {
+        int punish = 0;           // Initialize punishment sum
+        for (int i = 1; i <= n; i++) {
+            int sq = i * i;       // Square of the current number //O(log n) as number has log n digits
+            string s = to_string(sq);  // Convert square to string for partitioning
+
+            // Initialize memoization table with -1
+            // Dimensions: length of string x (target number + 1)
+            vector<vector<int>> t(s.length(), vector<int>(i + 1, -1));
+
+            // Check if the square can be partitioned into parts summing up to the original number
+            if (check(s, i, 0, 0, t) == true) {
+                punish += sq;  // Add the square to the punishment sum if partitioning is possible
+            }
+        }
+        return punish;  // Return the final punishment number
+    }
+};
+//Time Complexity: O(n*2^log10(n^2))
+//Space Complexity: O(n*log10(n^2))
