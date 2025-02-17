@@ -1,0 +1,38 @@
+// Letter Tile Possibilities (Medium)
+/*
+You have n  tiles, where each tile has one letter tiles[i] printed on it.
+Return the number of possible non-empty sequences of letters you can make using the letters printed on those tiles.
+Constraints:
+1 <= tiles.length <= 7
+tiles consists of uppercase English letters.
+*/
+//when we need to generate all the possible substrings/permutations/sequences we have to use the RECURSSION or BACKTRACKING concept.
+
+class Solution {
+public:
+    int n;
+    void solve(string tiles,vector<bool>& h,unordered_set<string>& r,string& cs){
+        r.insert(cs);
+        for(int i=0; i<n; i++){
+            if(h[i] == true)continue;
+
+            h[i] = true;               // DO
+            cs.push_back(tiles[i]);   
+            solve(tiles,h,r,cs);       //Expand
+            h[i] = false;              //UNDO
+            cs.pop_back();
+        }
+    }
+    int numTilePossibilities(string tiles) {
+        n = tiles.length();
+        vector<bool> v(n,false);        //to track whether a char is read or not 
+        unordered_set<string> res; 
+        string cs = "";
+        
+        solve(tiles,v,res,cs);
+        return res.size()-1;
+    }
+};
+
+//Time Complexity: O(n!) since all permutations are generated.
+//Space Complexity: O(n×n!) because each unique sequence is of length n! sequences.
