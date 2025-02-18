@@ -1,0 +1,72 @@
+// Construct Smallest Number From DI String (Medium)
+/*
+You are given a 0-indexed string pattern of length n consisting of the characters 'I' meaning increasing 
+and 'D' meaning decreasing.A 0-indexed string num of length n + 1 is created using the following conditions:
+num consists of the digits '1' to '9', where each digit is used at most once.
+If pattern[i] == 'I', then num[i] < num[i + 1].
+If pattern[i] == 'D', then num[i] > num[i + 1].
+Return the lexicographically smallest possible string num that meets the conditions.
+Constraints:
+1 <= pattern.length <= 8
+pattern consists of only the letters 'I' and 'D'.
+*/
+//Brute force approach - generate all possible permuattions of n then check if matches the pattern or not
+class Solution {
+public:
+    bool matchesPattern(string &num, string &pattern) {
+        for(int i = 0; i < pattern.length(); i++) {
+            if((pattern[i] == 'I' && num[i] > num[i+1]) ||
+                (pattern[i] == 'D' && num[i] < num[i+1])) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    string smallestNumber(string pattern) {
+        int n = pattern.length(); //"IID" , n = 3
+        string num = "";
+        for(int i = 1; i <= n+1; i++) {
+            num.push_back(i + '0'); 
+        }
+        //num = "1234"
+        while(!matchesPattern(num, pattern)) {  // O(n * n!)
+            next_permutation(begin(num), end(num));
+        }
+        return num;
+    }
+};
+//T.C : O(n * (n+1)!), (n+1)! permuations and n for matchesPattern()
+//S.C : O(n+1) for result
+
+
+//Optimal 
+//T.c : O(n)
+//S.c : O(n)
+class Solution {
+public:
+    string smallestNumber(string pattern) {
+        int n = pattern.size();
+        string ans;
+        stack<int> s;
+
+        for(int i=0; i<=n; i++){   //n+1
+            s.push(i+1);
+            if(i == n || pattern[i] == 'I'){
+                while(!s.empty()){
+                    ans += to_string(s.top());
+                    s.pop();
+                }
+            }
+        }
+        return ans;
+    }
+};
+
+/*
+Understand the Core Concept (Stack for Reversal):
+The main trick here is reversing a sequence when a certain pattern occurs (in this case, 'D' for decreasing).
+Stack is the perfect data structure because it follows Last In, First Out (LIFO),
+allowing you to reverse any sequence efficiently.
+Trigger to remember: Whenever you see patterns that involve reversal (like D means reverse order), think STACK.
+*/
