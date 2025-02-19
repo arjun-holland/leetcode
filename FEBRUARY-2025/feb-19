@@ -1,0 +1,50 @@
+//The k-th Lexicographical String of All Happy Strings of Length n(Medium)
+/*
+A happy string is a string that:
+consists only of letters of the set ['a', 'b', 'c'].
+s[i] != s[i + 1] for all values of i from 1 to s.length - 1 (string is 1-indexed).
+For example, strings "abc", "ac", "b" and "abcbabcbcb" are all happy strings and
+strings "aa", "baa" and "ababbc" are not happy strings.
+Given two integers n and k, consider a list of all happy strings of length n sorted in lexicographical order.
+Return the kth string of this list or return an empty string if there are less than k happy strings of length n.
+Constraints:
+1 <= n <= 10
+1 <= k <= 100
+
+/*
+The first character has 3 choices.
+Each subsequent character has 2 choices (since it can't be the same as the previous one).
+
+So the number of valid strings is 3×2*(n−1)!1
+Time Complexity: 
+O(3×2^(n−1))
+*/
+ 
+class Solution {
+public:
+    // Recursive function to generate all happy strings of length 'n'
+    void solve(int& n, vector<string>& r, string& cs) {
+        // Base case: If the current string reaches the required length, store it in the result
+        if (cs.size() == n) {
+            r.push_back(cs);
+            return; 
+        }
+        
+        // Try adding 'a', 'b', or 'c' while ensuring no two adjacent characters are the same
+        for (char ch = 'a'; ch <= 'c'; ch++) {
+            if (!cs.empty() && cs.back() == ch) continue; // Skip if consecutive characters match
+      
+            cs.push_back(ch);  // Add character (DO)
+            solve(n, r, cs);   // Recursive call (EXPAND)
+            cs.pop_back();      // Remove character (UNDO) to backtrack
+        }
+    }
+    string getHappyString(int n, int k) {
+        vector<string> res;  // Store all generated happy strings
+        string cs = "";      // Temporary string to build combinations
+        solve(n, res, cs);   // Start recursive generation
+        // If k is greater than the number of generated happy strings, return an empty string
+        if (res.size() < k) return "";
+        return res[k-1]; // Return the k-th happy string (1-based index)
+    }
+};
