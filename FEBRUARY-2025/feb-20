@@ -1,0 +1,37 @@
+//Find Unique Binary String(Medium)
+/*
+Given an array of strings nums containing n unique binary strings each of length n,
+return a binary string of length n that does not appear in nums. If there are multiple answers, you may return any of them.
+Constraints:
+n == nums.length
+1 <= n <= 16
+nums[i].length == n
+nums[i] is either '0' or '1'.
+All the strings of nums are unique.*/
+
+class Solution {
+public:
+    void solve(unordered_set<string>& h,int& l,string& cs){
+        if(l == cs.length()){
+            h.insert(cs);
+            return;
+        }
+        for(int i=0;i<=1;i++){
+            cs.push_back((i+'0'));  //Do
+            solve(h,l,cs);          //Expand
+            cs.pop_back();          //Undo
+        }
+    }
+    string findDifferentBinaryString(vector<string>& nums) {
+        unordered_set<string> h;
+        string s = nums[0];
+        int l = s.length();
+        string a = "";
+        solve(h,l,a);
+
+        for(string e : nums){
+            h.erase(e);
+        }
+        return *h.begin();
+    }
+};
