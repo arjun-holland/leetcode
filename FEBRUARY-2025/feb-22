@@ -1,0 +1,90 @@
+//Recover a Tree From Preorder Traversal(Hard)
+/*
+We run a preorder depth-first search (DFS) on the root of a binary tree.
+At each node in this traversal, we output D dashes (where D is the depth of this node), then we output the value of this node.
+If the depth of a node is D, the depth of its immediate child is D + 1.  The depth of the root node is 0.
+If a node has only one child, that child is guaranteed to be the left child.
+Given the output traversal of this traversal, recover the tree and return its root.
+Constraints:
+The number of nodes in the original tree is in the range [1, 1000].
+1 <= Node.val <= 10^9
+*/
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    int n;
+   TreeNode* solve(string s,int& i,int depth){
+        if(i >= n)return nullptr;
+        int j = i;
+        while(j < n && s[j] == '-'){ //to get the no.of D's
+            j++;
+        }
+        int d = j-i;
+        if(d != depth)return nullptr;
+
+        int v = 0;
+        i = j;
+        while(i < n && isdigit(s[i])){  //to get the value
+            v = v*10 + (s[i]-'0');
+            i++;
+        }
+        TreeNode* r = new TreeNode(v);
+        r->left = solve(s,i,d+1);
+        r->right = solve(s,i,d+1);
+        return r;
+    }
+    TreeNode* recoverFromPreorder(string traversal) {
+        n = traversal.length();
+        int i = 0;
+        return solve(traversal,i,0);
+    }
+};
+
+// Time Complexity: O(n)
+// Space Complexity: O(n) (for recursion stack in the worst case)
+
+/* Intuition
+At every step, we need to remove nodes and add new ones — essentially performing pop and push operations.
+If we think carefully, this can be efficiently handled using a stack. Additionally, at each step, 
+the size of the stack will give us the current depth of the node, helping us correctly place nodes 
+at their appropriate levels in the tree.
+*/
+
+class Solution {
+public:
+TreeNode* recoverFromPreorder(string traversal) {
+  stack<TreeNode*> st;
+  TreeNode* root = nullptr;
+  int i = 0;
+  while (i < traversal.size()) {
+    int depth = 0, value = 0;
+    while (i < traversal.size() && traversal[i] == '-') {
+      depth++;
+      i++;
+    }
+    while (i < traversal.size() && isdigit(traversal[i])) {
+      value = value * 10 + (traversal[i++] - '0');
+    }
+    TreeNode* node = new TreeNode(value);
+    while (st.size() > depth) st.pop();
+    if (!st.empty()) {
+      if (!st.top()->left) st.top()->left = node;
+      else st.top()->right = node;
+    } else {
+      root = node;
+    }      
+    st.push(node);
+  }
+  return root;
+}
+};
