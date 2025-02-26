@@ -1,0 +1,52 @@
+// Maximum Absolute Sum of Any Subarray (Medium)
+/*
+You are given an integer array nums. The absolute sum of a subarray [numsl, numsl+1, ..., numsr-1, numsr]
+is abs(numsl + numsl+1 + ... + numsr-1 + numsr).
+Return the maximum absolute sum of any (possibly empty) subarray of nums.
+Note that abs(x) is defined as follows:
+If x is a negative integer, then abs(x) = -x.
+If x is a non-negative integer, then abs(x) = x
+Constraints:
+1 <= nums.length <= 105
+-104 <= nums[i] <= 104
+*/
+//Intuition : using kadans algorithm to find max and min sum of tha array
+//T.c : O(n)
+class Solution {
+public:
+    int maxAbsoluteSum(vector<int>& nums) {
+        int maxsum = nums[0];
+        int cursum = nums[0];
+        for(int i=1;i<nums.size();i++){  //maxsum of array 
+            cursum = max(nums[i], cursum + nums[i]);
+            maxsum = max(maxsum, cursum);
+        }
+        
+        int minsum = nums[0];
+        cursum = nums[0]; 
+         for(int i=1;i<nums.size();i++){ //minsum of array
+             cursum = min(nums[i], cursum + nums[i]);
+             minsum = min(cursum, minsum);
+         }
+        return max(maxsum,abs(minsum));
+    }
+};
+
+
+class Solution {
+public:
+    int maxAbsoluteSum(vector<int>& nums) {
+        int maxsum = nums[0];
+        int cursum = nums[0];
+        int minsum = nums[0];
+        int cursum1 = nums[0]; 
+        for(int i=1;i<nums.size();i++){  //maxsum of array 
+            cursum = max(nums[i], cursum + nums[i]);
+            maxsum = max(maxsum, cursum);
+
+            cursum1 = min(nums[i], cursum1 + nums[i]);
+            minsum = min(cursum1, minsum);
+        }
+        return max(maxsum,abs(minsum));
+    }
+};
