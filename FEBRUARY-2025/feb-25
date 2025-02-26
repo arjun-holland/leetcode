@@ -1,0 +1,62 @@
+// Number of Sub-arrays With Odd Sum(Medium)
+/*
+Given an array of integers arr, return the number of subarrays with an odd sum.
+Since the answer can be very large, return it modulo 10^9 + 7.
+Constraints:
+1 <= arr.length <= 10^5
+1 <= arr[i] <= 100
+*/
+//Intuition: If the sum is even we need the odd to make the sum as odd viceversa
+
+//T.C : O(n)
+//S.C : O(n)
+class Solution {
+public:
+    int m = 1e9+7;
+    int numOfSubarrays(vector<int>& arr) {
+        int n = arr.size();
+        vector<int> ps(n,0);//ps : prefix Sum
+        ps[0] = arr[0];
+        for(int i=1;i<n;i++)ps[i] = ps[i-1] + arr[i];
+        int on = 0;
+        int en = 1;//as 0 is even
+        int ans = 0;
+        
+        for(int e : ps){
+            if(e % 2 == 0){   //e + o = o but e + e = e
+                ans = (ans + on) % m;
+                en++;
+            }else{    // o + e = o and o + o = e
+                ans = (ans + en) % m;
+                on++;
+            }
+        }
+        return ans;
+    }
+};
+
+//T.C : O(n)
+//S.C : O(1)
+class Solution {
+public:
+    int m = 1e9+7;
+    int numOfSubarrays(vector<int>& arr) {
+        int n = arr.size();
+        int ps = 0;//prefix sum
+        int on = 0;
+        int en = 1;//as 0 is even
+        int ans = 0;
+
+        for(int e : arr){
+            ps += e;
+            if(ps % 2 == 0){//e + o = o but e + e = e
+                ans = (ans + on) % m;
+                en++;
+            }else{ // o + e = o and o + o = e
+                ans = (ans + en) % m;
+                on++;
+            }
+        }
+        return ans;
+    }
+};
