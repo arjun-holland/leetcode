@@ -1,0 +1,45 @@
+// Check if Number is a Sum of Powers of Three (Medium)
+/*
+Given an integer n, return true if it is possible to represent n as the sum of distinct powers of three. Otherwise, return false.
+
+An integer y is a power of three if there exists an integer x such that y == 3^x.
+
+Constraints:
+
+1 <= n <= 10^7
+*/
+
+class Solution {
+public:
+    int power(int n){
+        if(n == 0)return 1;
+        int r = 1;
+        for(int i=1;i<=n;i++){
+            r = r * 3;
+        }
+        return r;
+    }
+    bool checkPowersOfThree(int y) {
+        vector<int> v;
+        int p;
+        for(int i=0;i<15;i++){
+            int r = power(i);
+            if(r > y){
+               p = i-1;
+               break; 
+            }
+            v.push_back(r);
+        }
+        int sz = v.size();
+        int rd = v[sz-1];//result duplicate
+        int r = y - rd;
+        for(int i=sz-2;i>=0;i--){
+            if(r < v[i])continue;
+            rd += v[i];
+            r = y - rd;
+        }
+        if(rd == y)return true;
+        return false;
+    }
+};
+ 
