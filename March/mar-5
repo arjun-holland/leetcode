@@ -1,0 +1,32 @@
+// Count Total Number of Colored Cells(Medium)
+/*
+There exists an infinitely large two-dimensional grid of uncolored unit cells. You are given a positive integer n,
+indicating that you must do the following routine for n minutes:
+
+At the first minute, color any arbitrary unit cell blue.
+Every minute thereafter, color blue every uncolored cell that touches a blue cell.
+Below is a pictorial representation of the state of the grid after minutes 1, 2, and 3.
+*/
+
+class Solution {
+public:
+    long long coloredCells(int n) {
+        if(n == 1)return 1;
+        long long r = 1;
+        int i = 1;
+        while(i < n){
+            r += (4 * i);
+            i++;
+        }
+        return r;
+    }
+};
+
+//mathematical approach 
+class Solution {
+public:
+    long long coloredCells(int n) {
+        long long r = 1+2*1ll*(n-1)*n;
+        return r;
+    }
+};
