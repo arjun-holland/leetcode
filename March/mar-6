@@ -1,0 +1,59 @@
+//Find Missing and Repeated Values(Easy)
+/*
+You are given a 0-indexed 2D integer matrix grid of size n * n with values in the range [1, n2]. 
+Each integer appears exactly once except a which appears twice and b which is missing. 
+The task is to find the repeating and missing numbers a and b.
+Return a 0-indexed integer array ans of size 2 where ans[0] equals to a and ans[1] equals to b.
+Constraints:
+2 <= n == grid.length == grid[i].length <= 50
+1 <= grid[i][j] <= n * n
+For all x that 1 <= x <= n * n there is exactly one x that is not equal to any of the grid members.
+For all x that 1 <= x <= n * n there is exactly one x that is equal to exactly two of the grid members.
+For all x that 1 <= x <= n * n except two of them there is exatly one pair of i, j that 0 <= i, j <= n - 1 and grid[i][j] == x.
+*/
+
+class Solution {
+public:
+    vector<int> findMissingAndRepeatedValues(vector<vector<int>>& grid) {
+        set<int> s;
+        int n = grid.size(),d;
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                if(s.count(grid[i][j])){
+                    d = grid[i][j];
+                    continue;
+                }
+                s.insert(grid[i][j]);
+            }
+        }
+        int r;
+        for(int i=1; i<=n*n; i=i+1){
+            if(!s.count(i)){
+                r = i;
+            }
+        }
+        return {d,r};
+    }
+};
+
+
+class Solution {
+public:
+    vector<int> findMissingAndRepeatedValues(vector<vector<int>>& grid) {
+        const int n = grid.size();
+        vector<char> ingrid(n*n+1, 0);
+        ingrid[0] = 1;
+        for (auto &row: grid)
+        {
+            for (auto i: row)
+                ingrid[i]++;
+        }
+        vector<int> goal(2);
+        for (int i = 1; i <= n*n; ++i)
+        {
+            if (ingrid[i] == 2) goal[0] = i;
+            if (ingrid[i] == 0) goal[1] = i;
+        }
+        return goal;
+    }
+};
