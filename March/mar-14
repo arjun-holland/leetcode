@@ -1,0 +1,68 @@
+//Maximum Candies Allocated to K Children(Medium)
+/*
+You are given a 0-indexed integer array candies. Each element in the array denotes a pile of candies of size candies[i]. You can divide each pile into any number of sub piles, but you cannot merge two piles together.
+
+You are also given an integer k. You should allocate piles of candies to k children such that each child gets the same number of candies. Each child can be allocated candies from only one pile of candies and some piles of candies may go unused.
+
+Return the maximum number of candies each child can get.
+
+Constraints:
+1 <= candies.length <= 10^5
+1 <= candies[i] <= 10^7
+1 <= k <= 1012
+
+Example 1:
+Input: candies = [5,8,6], k = 3
+Output: 5
+*/
+
+
+//Brute force
+class Solution {
+public:
+    int maximumCandies(vector<int>& candies, long long k) {
+        int maxC = 0;
+        for(int e : candies)
+            maxC = max(maxC, e);
+
+        int ans = 0;
+        for(int c=maxC; c>=1; c--){ // we can reduce this linear search with binary search
+            int count = 0;
+            for(int candy : candies){
+                count += candy/c;
+                if(count >= k)return c;
+            }
+        }
+        return 0;
+    }
+};
+
+
+//Intuition : the least possible value is 1 and high value is max value in array
+//binary search on answer
+class Solution {
+public:
+    bool isValid(vector<int>& candies, long long k,int v){
+        int n = candies.size();
+        for(int i=0;i<n;i++){
+            k -= candies[i]/v;
+            if(k <= 0)return true;
+        }
+        return k<=0;
+    }
+
+    int maximumCandies(vector<int>& candies, long long k) {
+        int l = 1,r = *max_element(candies.begin(),candies.end());
+        int res = 0;
+        while(l <= r){
+            int mid = l +(r-l)/2;
+            if(isValid(candies,k,mid)){
+                res = mid;
+                l = mid+1;
+            }else{
+                r = mid-1;
+            }
+        }
+        return res;
+    }
+};
