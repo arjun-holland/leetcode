@@ -1,0 +1,78 @@
+//Count of Substrings Containing Every Vowel and K Consonants II(Medium)
+/*
+You are given a string word and a non-negative integer k.
+Return the total number of substrings of word that contain every vowel ('a', 'e', 'i', 'o', and 'u') 
+at least once and exactly k consonants.
+
+Example 1:
+Input: word = "aeioqq", k = 1
+Output: 0
+Explanation:
+There is no substring with every vowel.
+ */
+
+//sliding windows
+
+class Solution {
+public:
+    bool isVowel(char &ch) {
+        return ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u';
+    }
+    long long countOfSubstrings(string word, int k) {
+        int n = word.length();
+        unordered_map<char, int> mp;         //to keep count of vowels in a current window  //S.C : O(5) constant
+        
+        vector<int> nextCons(n);      //Preprocessing to be able to find index of just next consonant
+        int lastConsIdx = n;
+        for(int i = n-1; i >=0; i--) {
+            nextCons[i] = lastConsIdx;
+            if(!isVowel(word[i])) { //consonant
+                lastConsIdx = i;
+            }
+        }
+        int i = 0;  //for consize the window
+        int j = 0;  //for expand the window
+        long long count = 0;
+        int cons = 0;
+        while(j < n) {     //T.C : O(2*n) ~ O(n) 
+            char ch = word[j];
+            if(isVowel(ch)) {
+                mp[ch]++;
+            } else {
+                cons++;
+            }
+
+            //cons must be always == k
+            while(cons > k) {
+                char ch = word[i];
+                if(isVowel(ch)) {
+                    mp[ch]--;
+                    if(mp[ch] == 0) {
+                        mp.erase(ch);
+                    }
+                } else {
+                    cons--;
+                }
+                i++;
+            }
+
+            while(i < n && mp.size() == 5 && cons == k) {  //valid window
+                int idx = nextCons[j];      //it will tell me the next consonant after jth index
+                count += idx - j;        //no.of valid sets
+                char ch = word[i];
+                if(isVowel(ch)) {
+                    mp[ch]--;
+                    if(mp[ch] == 0) {
+                        mp.erase(ch);
+                    }
+                } else {
+                    cons--;
+                }
+                i++;
+            }
+            j++;
+        }
+        return count;
+    }
+};
+ 
