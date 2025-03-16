@@ -1,0 +1,98 @@
+//House Robber IV
+/*
+There are several consecutive houses along a street, each of which has some money inside. There is also a robber, who wants to steal money from the homes, 
+but he refuses to steal from adjacent homes.
+The capability of the robber is the maximum amount of money he steals from one house of all the houses he robbed.
+You are given an integer array nums representing how much money is stashed in each house. More formally, the ith house from the left has nums[i] dollars.
+You are also given an integer k, representing the minimum number of houses the robber will steal from. It is always possible to steal at least k houses.
+Return the minimum capability of the robber out of all the possible ways to steal at least k houses.
+
+Example 1:
+Input: nums = [2,7,9,3,1], k = 2
+Output: 2
+Explanation: There are 7 ways to rob the houses. The way which leads to minimum capability is to rob the house at index 0 and 4. Return max(nums[0], nums[4]) = 2.
+
+Constraints:
+1 <= nums.length <= 10^5
+1 <= nums[i] <= 109
+1 <= k <= (nums.length + 1)/2
+*/
+
+//Binary search 
+class Solution {
+public:
+    bool isValid(vector<int>& nums, int m,int k){
+        int house = 0;
+        for(int i=0; i<nums.size(); i++){
+            if(nums[i] <= m){
+                house++;
+                i++;
+            }
+        }
+        return house >= k;
+    }
+    int minCapability(vector<int>& nums, int k) {
+        int i = *min_element(begin(nums),end(nums));
+        int j = *max_element(begin(nums),end(nums));
+        int ans = j;
+        while(i <= j){
+            int m = i+(j-i)/2;
+            if(isValid(nums,m,k)){
+                ans = min(ans,m);
+                j = m - 1;
+            }else{
+                i = m + 1;
+            }
+        }
+        return ans;
+    }
+};
+
+
+
+//Recurssion dp = memoization : (gives TLE as it take snore tast cases use Binary  search)
+class Solution {
+ public:
+     int solve(int i,vector<int>& nums, int k,vector<vector<int>> dp){
+         if(k == 0){
+             return 0;  // no more houses to rob
+         }
+         if(i >= nums.size()){
+             return INT_MAX;  // invalid path: so not include in outr answer
+         }
+         if(dp[i][k] != -1)return dp[i][k];
+         int pick = max(nums[i], solve(i+2,nums,k-1,dp));
+         int not_pick = solve(i+1,nums,k,dp);
+         return dp[i][k] = min(pick, not_pick); // we have to return the min
+     }
+     int minCapability(vector<int>& nums, int k) {
+         int n = nums.size();
+         vector<vector<int>> dp(n+1,vector<int>(k+1,-1));
+         return solve(0,nums,k,dp);
+     }
+};
+
+
+
+
+
+//Rescurssion : Brute force approach
+class Solution {
+public:
+    int solve(int i,vector<int>& nums, int k){
+         if(k == 0){
+             return 0;  // no more houses to rob
+         }
+         if(i >= nums.size()){
+             return INT_MAX;  // invalid path: so not include in outr answer
+         }
+         int pick = max(nums[i], solve(i+2,nums,k-1));
+         int not_pick = solve(i+1,nums,k);
+
+         return min(pick, not_pick); // we have to return the min
+     }
+     int minCapability(vector<int>& nums, int k) {
+         int n = nums.size();
+         return solve(0,nums,k);
+     }
+};
