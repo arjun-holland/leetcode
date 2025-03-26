@@ -1,0 +1,73 @@
+//Minimum Operations to Make a Uni-Value Grid
+/*
+You are given a 2D integer grid of size m x n and an integer x. In one operation, you can add x to or subtract x from any element in the grid.
+
+A uni-value grid is a grid where all the elements of it are equal.
+
+Return the minimum number of operations to make the grid uni-value. If it is not possible, return -1.
+*/
+
+//Brute force approach
+//  class Solution {
+// public:
+//     int minOperations(vector<vector<int>>& grid, int x) {
+//         int ans = INT_MAX;
+
+//         for (auto g : grid) {
+//             for (int e : g) {
+//                 int a = 0;
+//                 bool ch = true;
+//                 for (auto gi : grid) {
+//                     for (int el : gi) {
+//                         if (el == e)continue;
+//                         int v = abs(e - el);
+//                         if(v % x != 0){
+//                             ch = false;
+//                             break;
+//                         }
+//                         a += v / x;
+//                     }
+//                     if(ch == false)break;
+//                 }
+//                 if(ch == false) continue;
+//                 ans = min(ans,a);
+//             }
+//         }
+
+//         return ans == INT_MAX ? -1 : ans;
+//     }
+// };
+
+/* 
+Instead of checking all values, we should focus on the median of the grid elements. The median minimizes the sum of absolute differences, making it the optimal choice for minimizing operations.
+*/
+//optimal approach 
+class Solution {
+public:
+    int minOperations(vector<vector<int>>& grid, int x) {
+        vector<int> nums;
+        for (auto& row : grid)
+            for (int num : row)
+                nums.push_back(num);
+
+        // Check if transformation is possible
+        int remainder = nums[0] % x;
+        for (int num : nums) {
+            if (num % x != remainder)
+                return -1;
+        }
+
+        // Sort the array to find median
+        sort(nums.begin(), nums.end());
+        int median = nums[nums.size() / 2];
+
+        // Compute the number of operations
+        int operations = 0;
+        for (int num : nums) {
+            operations += abs(num - median) / x;
+        }
+
+        return operations;
+    }
+};
+
