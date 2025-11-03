@@ -1,0 +1,45 @@
+
+/*  PROBLEM
+
+You are given an array of integers nums and the head of a linked list. Return the head of the 
+modified linked list after removing all nodes from the linked list that have a value that exists in nums.
+
+
+Input: nums = [1,2,3], head = [1,2,3,4,5]
+Output: [4,5]
+
+*/
+
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+ 
+class Solution {
+public:
+    ListNode* modifiedList(vector<int>& nums, ListNode* head) {
+        unordered_set<int> toRemove(nums.begin(), nums.end());
+        
+        ListNode* dummy = new ListNode(0); // Dummy node for easier construction
+        ListNode* tail = dummy;
+
+        while (head != nullptr) {
+            if (toRemove.find(head->val) == toRemove.end()) {
+                tail->next = new ListNode(head->val);
+                tail = tail->next;
+            }
+            head = head->next;
+        }
+
+        ListNode* result = dummy->next;
+        delete dummy; // free dummy node
+        return result;
+    }
+};
